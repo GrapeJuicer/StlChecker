@@ -1,10 +1,7 @@
 #include "obj.hpp"
 
-Vec3::Vec3()
+Vec3::Vec3() : Vec3(0.0, 0.0, 0.0)
 {
-    this->x = 0.0;
-    this->y = 0.0;
-    this->z = 0.0;
 }
 
 Vec3::Vec3(double x, double y, double z)
