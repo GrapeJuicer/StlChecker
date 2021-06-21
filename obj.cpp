@@ -48,3 +48,176 @@ Face::Face(float x1, float y1, float z1,
 Face::~Face()
 {
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+Stl::Stl()
+{
+}
+
+Stl::~Stl()
+{
+}
+
+int Stl::size()
+{
+    return (int)this->faces.size();
+}
+
+int Stl::load(std::string file, bool isBinary)
+{
+    if (isBinary)
+    {
+        std::ifstream fs(file, std::ios::binary);
+        if (!fs)
+        {
+            return -1;
+        }
+
+        return this->load(fs, isBinary);
+    }
+    else
+    {
+        std::ifstream fs(file);
+        if (!fs)
+        {
+            return -1;
+        }
+        return this->load(fs, isBinary);
+    }
+}
+
+int Stl::load(std::ifstream &file, bool isBinary)
+{
+    if (isBinary)
+    {
+        return this->loadBinary(file);
+    }
+    else
+    {
+        return this->loadText(file);
+    }
+}
+
+int Stl::loadText(std::ifstream &file)
+{
+    /*
+    solid 任意の文字列
+    facet normal x成分値 y成分値 z成分値
+    outer loop
+    vertex x成分値 y成分値 z成分値
+    vertex x成分値 y成分値 z成分値
+    vertex x成分値 y成分値 z成分値
+    endloop
+    endfacet
+    facet normal x成分値 y成分値 z成分値
+    outer loop
+    vertex x成分値 y成分値 z成分値
+    vertex x成分値 y成分値 z成分値
+    vertex x成分値 y成分値 z成分値
+    endloop
+    endfacet
+    （facet normal行からendfacet行までを１枚の三角形データとして以降繰り返し）
+    endsolid 任意の文字列
+    */
+
+    std::string word;
+
+    try
+    {
+        while (!file.eof())
+        {
+            file >> word;
+
+            if (word == "solid")
+            {
+                // その行を全て読み取る
+                std::getline(file, this->comment);
+                if (this->comment.length() <= 1) // 任意文字列がなかったら
+                {
+                    this->comment = ""; // 空にする
+                }
+            }
+            else if (word == "facet")
+            {
+                Face face;
+                file.ignore(256, ' ');                                   // " normal " を捨てる
+                file >> face.normal.x >> face.normal.y >> face.normal.z; // normal x, normal y, normal z
+                file.ignore(256, '\n');                                  // normal z の後ろの改行を捨てる
+                file.ignore(256, '\n');                                  // "outer loop" を捨てる
+
+                for (int i = 0; i < 3; i++)
+                {
+                    file.ignore(256, ' ');                                         // "vertex" を捨てる
+                    file >> face.point[i].x >> face.point[i].y >> face.point[i].z; // 点座標読み込み
+                }
+
+                file.ignore(256, '\n'); // 改行文字すてる
+                file.ignore(256, '\n'); // endloop すてる
+                file.ignore(256, '\n'); // endfacet すてる
+
+                this->faces.push_back(face); // 面を登録
+
+                writen_face_size++; // 面の数を1増やす(テキスト形式では定義数と実際の数は必ず同じ)
+            }
+            else if (word == "endsolid")
+            {
+                break;
+            }
+        }
+    }
+    catch (const std::exception &e)
+    {
+        // 何か例外が出たら失敗
+        return 1;
+    }
+
+    return 0;
+}
+
+int Stl::loadBinary(std::ifstream &file)
+{
+    try
+    {
+        // 任意文字列の読み込み
+        char s[80];
+        file.read(s, this->def_comment_byte);
+        this->comment = s;
+
+        // サイズの読み込み
+        file.read(reinterpret_cast<char *>(&this->writen_face_size), this->def_size_byte);
+
+        while (!file.eof())
+        {
+            Face face;
+
+            // normal position
+            file.read(reinterpret_cast<char *>(&face.normal.x), this->def_value_byte);
+            file.read(reinterpret_cast<char *>(&face.normal.y), this->def_value_byte);
+            file.read(reinterpret_cast<char *>(&face.normal.z), this->def_value_byte);
+
+            // point position
+            for (int i = 0; i < 3; i++)
+            {
+                file.read(reinterpret_cast<char *>(&face.point[i].x), this->def_value_byte);
+                file.read(reinterpret_cast<char *>(&face.point[i].y), this->def_value_byte);
+                file.read(reinterpret_cast<char *>(&face.point[i].z), this->def_value_byte);
+            }
+
+            file.seekg(2, std::ios::cur); // 2byte 進む
+
+            // 登録
+            this->faces.push_back(face);
+        }
+    }
+    catch (const std::exception &e)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+
+
+
