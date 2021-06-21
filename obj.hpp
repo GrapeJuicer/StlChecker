@@ -4,13 +4,13 @@ class Vec3
 {
 private:
 public:
-    double x;
-    double y;
-    double z;
+    float x;
+    float y;
+    float z;
     Vec3();
-    Vec3(double x, double y, double z);
+    Vec3(float x, float y, float z);
     ~Vec3();
-    double length();
+    float length();
 };
 
 class Face
@@ -22,7 +22,7 @@ public:
     Face();
     Face(Vec3 p[3], Vec3 normal);
     Face(Vec3 p1, Vec3 p2, Vec3 p3, Vec3 normal);
-    Face(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, double nx, double ny, double nz);
+    Face(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float nx, float ny, float nz);
     ~Face();
 };
 
