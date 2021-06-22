@@ -125,10 +125,8 @@ int Stl::loadText(std::ifstream &file)
 
     try
     {
-        while (!file.eof())
+        while (file >> word)
         {
-            file >> word;
-
             if (word == "solid")
             {
                 // その行を全て読み取る
@@ -141,20 +139,19 @@ int Stl::loadText(std::ifstream &file)
             else if (word == "facet")
             {
                 Face face;
-                file.ignore(256, ' ');                                   // " normal " を捨てる
-                file >> face.normal.x >> face.normal.y >> face.normal.z; // normal x, normal y, normal z
-                file.ignore(256, '\n');                                  // normal z の後ろの改行を捨てる
-                file.ignore(256, '\n');                                  // "outer loop" を捨てる
+                file >> word;                                            // "normal" を捨てる
+                file >> face.normal.x >> face.normal.y >> face.normal.z; // normal x, normal y, normal zl;
+                file >> word >> word;                                    // "outer", "loop" を捨てる
 
                 for (int i = 0; i < 3; i++)
                 {
-                    file.ignore(256, ' ');                                         // "vertex" を捨てる
+                    file >> word;                                                  // "vertex" を捨てる
                     file >> face.point[i].x >> face.point[i].y >> face.point[i].z; // 点座標読み込み
                 }
 
-                file.ignore(256, '\n'); // 改行文字すてる
-                file.ignore(256, '\n'); // endloop すてる
-                file.ignore(256, '\n'); // endfacet すてる
+                file >> word >> word; // "endloop", "endfacet" すてる
+
+                std::cout << face.normal.x << "\t" << face.normal.y << "\t" << face.normal.z << "\t" << face.point[0].x << "\t" << face.point[0].y << "\t" << face.point[0].z << "\t" << face.point[1].x << "\t" << face.point[1].y << "\t" << face.point[1].z << "\t" << face.point[2].x << "\t" << face.point[2].y << "\t" << face.point[2].z << std::endl;
 
                 this->faces.push_back(face); // 面を登録
 
@@ -162,6 +159,7 @@ int Stl::loadText(std::ifstream &file)
             }
             else if (word == "endsolid")
             {
+                std::cout << "\nbreak" << std::endl;
                 break;
             }
         }
@@ -187,7 +185,8 @@ int Stl::loadBinary(std::ifstream &file)
         // サイズの読み込み
         file.read(reinterpret_cast<char *>(&this->writen_face_size), this->def_size_byte);
 
-        while (!file.eof())
+        // while (!file.eof())
+        for (int i = 0; i < this->writen_face_size; i++)
         {
             Face face;
 
@@ -212,12 +211,9 @@ int Stl::loadBinary(std::ifstream &file)
     }
     catch (const std::exception &e)
     {
+        std::cout << "exception" << std::endl;
         return -1;
     }
 
     return 0;
 }
-
-
-
-
