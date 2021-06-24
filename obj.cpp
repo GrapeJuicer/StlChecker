@@ -174,14 +174,14 @@ int Stl::loadBinary(ifstream &file)
     {
         // 任意文字列の読み込み
         char s[80];
-        int size;
+        int size = 0;
 
         // 任意文字列の読み込み
         file.read(s, this->def_comment_byte);
         this->comment = s;
 
         // サイズの読み込み
-        file.read(reinterpret_cast<char *>(size), this->def_size_byte);
+        file.read(reinterpret_cast<char *>(&size), this->def_size_byte);
 
         for (int i = 0; i < size; i++)
         {
