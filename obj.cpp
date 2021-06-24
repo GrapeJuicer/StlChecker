@@ -152,8 +152,6 @@ int Stl::loadText(ifstream &file)
                 file >> word >> word; // "endloop", "endfacet" すてる
 
                 this->faces.push_back(face); // 面を登録
-
-                writen_face_size++; // 面の数を1増やす(テキスト形式では定義数と実際の数は必ず同じ)
             }
             else if (word == "endsolid")
             {
@@ -176,14 +174,16 @@ int Stl::loadBinary(ifstream &file)
     {
         // 任意文字列の読み込み
         char s[80];
+        int size;
+
+        // 任意文字列の読み込み
         file.read(s, this->def_comment_byte);
         this->comment = s;
 
         // サイズの読み込み
-        file.read(reinterpret_cast<char *>(&this->writen_face_size), this->def_size_byte);
+        file.read(reinterpret_cast<char *>(size), this->def_size_byte);
 
-        // while (!file.eof())
-        for (int i = 0; i < this->writen_face_size; i++)
+        for (int i = 0; i < size; i++)
         {
             Face face;
 

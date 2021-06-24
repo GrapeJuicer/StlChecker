@@ -35,14 +35,23 @@ public:
 class Stl
 {
 private:
+    int loadText(ifstream &file);
+    int loadBinary(ifstream &file);
+
+public:
+    // field
     static const int def_comment_byte = 80;
     static const int def_size_byte = 4;
     static const int def_value_byte = 4;
     string comment = "";
     vector<Face> faces;
 
+    // constructor/destructor
     Stl();
     ~Stl();
+
+    // method
     int size();
+    int load(string file, bool isBinary);
     int load(ifstream &file, bool isBinary);
 };
