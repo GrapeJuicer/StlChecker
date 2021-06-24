@@ -17,7 +17,7 @@ Vec3::~Vec3()
 
 float Vec3::length()
 {
-    return sqrt(std::pow(this->x, 2) + std::pow(this->y, 2) + std::pow(this->z, 2));
+    return sqrt(pow(this->x, 2) + pow(this->y, 2) + pow(this->z, 2));
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,11 +64,11 @@ int Stl::size()
     return (int)this->faces.size();
 }
 
-int Stl::load(std::string file, bool isBinary)
+int Stl::load(string file, bool isBinary)
 {
     if (isBinary)
     {
-        std::ifstream fs(file, std::ios::binary);
+        ifstream fs(file, ios::binary);
         if (!fs)
         {
             return -1;
@@ -78,7 +78,7 @@ int Stl::load(std::string file, bool isBinary)
     }
     else
     {
-        std::ifstream fs(file);
+        ifstream fs(file);
         if (!fs)
         {
             return -1;
@@ -87,7 +87,7 @@ int Stl::load(std::string file, bool isBinary)
     }
 }
 
-int Stl::load(std::ifstream &file, bool isBinary)
+int Stl::load(ifstream &file, bool isBinary)
 {
     if (isBinary)
     {
@@ -99,7 +99,7 @@ int Stl::load(std::ifstream &file, bool isBinary)
     }
 }
 
-int Stl::loadText(std::ifstream &file)
+int Stl::loadText(ifstream &file)
 {
     /*
     solid 任意の文字列
@@ -121,7 +121,7 @@ int Stl::loadText(std::ifstream &file)
     endsolid 任意の文字列
     */
 
-    std::string word;
+    string word;
 
     try
     {
@@ -130,7 +130,7 @@ int Stl::loadText(std::ifstream &file)
             if (word == "solid")
             {
                 // その行を全て読み取る
-                std::getline(file, this->comment);
+                getline(file, this->comment);
                 if (this->comment.length() <= 1) // 任意文字列がなかったら
                 {
                     this->comment = ""; // 空にする
@@ -164,7 +164,7 @@ int Stl::loadText(std::ifstream &file)
             }
         }
     }
-    catch (const std::exception &e)
+    catch (const exception &e)
     {
         // 何か例外が出たら失敗
         return 1;
@@ -173,7 +173,7 @@ int Stl::loadText(std::ifstream &file)
     return 0;
 }
 
-int Stl::loadBinary(std::ifstream &file)
+int Stl::loadBinary(ifstream &file)
 {
     try
     {
@@ -203,13 +203,13 @@ int Stl::loadBinary(std::ifstream &file)
                 file.read(reinterpret_cast<char *>(&face.point[i].z), this->def_value_byte);
             }
 
-            file.seekg(2, std::ios::cur); // 2byte 進む
+            file.seekg(2, ios::cur); // 2byte 進む
 
             // 登録
             this->faces.push_back(face);
         }
     }
-    catch (const std::exception &e)
+    catch (const exception &e)
     {
         std::cout << "exception" << std::endl;
         return -1;

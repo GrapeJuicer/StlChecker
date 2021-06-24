@@ -4,6 +4,8 @@
 #include <string>
 #include <cmath>
 
+using namespace std;
+
 class Vec3
 {
 private:
@@ -36,15 +38,11 @@ private:
     static const int def_comment_byte = 80;
     static const int def_size_byte = 4;
     static const int def_value_byte = 4;
-    int loadText(std::ifstream &file);
-    int loadBinary(std::ifstream &file);
-public:
-    std::string comment = "";
-    int writen_face_size = 0;
-    std::vector<Face> faces;
+    string comment = "";
+    vector<Face> faces;
+
     Stl();
     ~Stl();
     int size();
-    int load(std::string file, bool isBinary);
-    int load(std::ifstream &file, bool isBinary);
+    int load(ifstream &file, bool isBinary);
 };
