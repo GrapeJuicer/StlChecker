@@ -151,15 +151,12 @@ int Stl::loadText(ifstream &file)
 
                 file >> word >> word; // "endloop", "endfacet" すてる
 
-                std::cout << face.normal.x << "\t" << face.normal.y << "\t" << face.normal.z << "\t" << face.point[0].x << "\t" << face.point[0].y << "\t" << face.point[0].z << "\t" << face.point[1].x << "\t" << face.point[1].y << "\t" << face.point[1].z << "\t" << face.point[2].x << "\t" << face.point[2].y << "\t" << face.point[2].z << std::endl;
-
                 this->faces.push_back(face); // 面を登録
 
                 writen_face_size++; // 面の数を1増やす(テキスト形式では定義数と実際の数は必ず同じ)
             }
             else if (word == "endsolid")
             {
-                std::cout << "\nbreak" << std::endl;
                 break;
             }
         }
@@ -211,7 +208,6 @@ int Stl::loadBinary(ifstream &file)
     }
     catch (const exception &e)
     {
-        std::cout << "exception" << std::endl;
         return -1;
     }
 
