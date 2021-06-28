@@ -17,6 +17,10 @@ public:
     Vec3(float x, float y, float z);
     ~Vec3();
     float length();
+
+    // operator
+    bool operator==(const Vec3 &r) const;
+    bool operator!=(const Vec3 &r) const;
 };
 
 class Face

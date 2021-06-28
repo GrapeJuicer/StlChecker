@@ -20,6 +20,16 @@ float Vec3::length()
     return sqrt(pow(this->x, 2) + pow(this->y, 2) + pow(this->z, 2));
 }
 
+bool Vec3::operator==(const Vec3 &r) const
+{
+    return (this->x == r.x && this->y == r.y && this->z == r.z);
+}
+
+bool Vec3::operator!=(const Vec3 &r) const
+{
+    return !(*this == r);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 Face::Face() : Face(Vec3(), Vec3(), Vec3(), Vec3())
