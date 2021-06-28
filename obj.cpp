@@ -59,6 +59,16 @@ Face::~Face()
 {
 }
 
+bool Face::operator==(const Face &r) const
+{
+    return (this->normal == r.normal && this->point[0] == r.point[0] && this->point[1] == r.point[1] && this->point[2] == r.point[2]);
+}
+
+bool Face::operator!=(const Face &r) const
+{
+    return !(*this == r);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 Stl::Stl()
