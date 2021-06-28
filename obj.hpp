@@ -27,13 +27,18 @@ class Face
 {
 private:
 public:
+    // field
     Vec3 point[3];
     Vec3 normal;
+
+    // method
     Face();
     Face(Vec3 p[3], Vec3 normal);
     Face(Vec3 p1, Vec3 p2, Vec3 p3, Vec3 normal);
     Face(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float nx, float ny, float nz);
     ~Face();
+
+    // operator
     bool operator==(const Face &r) const;
     bool operator!=(const Face &r) const;
 };
