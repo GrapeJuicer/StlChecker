@@ -77,4 +77,7 @@ public:
     bool equals(const Stl &r, enum PatternLevel lv = lv_exactly) const;
     bool equalsWithShow(const Stl &r, bool isShow, enum PatternLevel lv = lv_exactly) const;
 
+    // operator
+    bool operator==(const Stl &r) const;
+    bool operator!=(const Stl &r) const;
 };

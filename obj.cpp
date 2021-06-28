@@ -308,3 +308,12 @@ bool Stl::equalsWithShow(const Stl &r, bool isShow, enum PatternLevel lv) const
     }
 }
 
+bool Stl::operator==(const Stl &r) const
+{
+    return this->equals(r);
+}
+
+bool Stl::operator!=(const Stl &r) const
+{
+    return !(*this == r);
+}
