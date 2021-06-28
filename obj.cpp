@@ -253,3 +253,58 @@ int Stl::showItem(unsigned int index) const
     return 0;
 }
 
+// now , lv_exactly only
+bool Stl::equals(const Stl &r, enum PatternLevel lv) const
+{
+    return this->equalsWithShow(r, false, lv);
+}
+
+bool Stl::equalsWithShow(const Stl &r, bool isShow, enum PatternLevel lv) const
+{
+    bool flag;
+
+    if (this->size() != r.size())
+    {
+        return false;
+    }
+
+    if (lv == lv_exactly)
+    {
+        flag = true;
+
+        for (int i = 0; i < this->size(); i++)
+        {
+            if (this->faces[i] != r.faces[i])
+            {
+                if (isShow)
+                {
+                    flag = false;
+                    // info
+                    cout << "P" << i + 1 << endl;
+                    // this
+                    this->showItem(i);
+                    // r
+                    r.showItem(i);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        return flag;
+    }
+    // else if (lv == lv_pair)
+    // {
+    //     //
+    // }
+    // else if(lv == lv_shape)
+    // {
+    //     //
+    // }
+    else
+    {
+        return false;
+    }
+}
+

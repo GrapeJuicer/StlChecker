@@ -74,4 +74,7 @@ public:
     int load(ifstream &file, bool isBinary);
     void show() const;
     int showItem(unsigned int index) const;
+    bool equals(const Stl &r, enum PatternLevel lv = lv_exactly) const;
+    bool equalsWithShow(const Stl &r, bool isShow, enum PatternLevel lv = lv_exactly) const;
+
 };
