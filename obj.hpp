@@ -62,7 +62,9 @@ public:
     ~Stl();
 
     // method
-    int size();
+    int size() const;
     int load(string file, bool isBinary);
     int load(ifstream &file, bool isBinary);
+    void show() const;
+    int showItem(unsigned int index) const;
 };

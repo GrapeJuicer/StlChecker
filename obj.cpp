@@ -79,7 +79,7 @@ Stl::~Stl()
 {
 }
 
-int Stl::size()
+int Stl::size() const
 {
     return (int)this->faces.size();
 }
@@ -233,3 +233,23 @@ int Stl::loadBinary(ifstream &file)
 
     return 0;
 }
+
+void Stl::show() const
+{
+    cout << "comment: " << this->comment << endl;
+    cout << "size: " << this->size() << endl;
+    for (int i = 0; i < this->size(); i++)
+    {
+        this->showItem(i);
+    }
+}
+
+int Stl::showItem(unsigned int index) const
+{
+    cout << "norm:(" << this->faces[index].normal.x << "," << this->faces[index].normal.y << "," << this->faces[index].normal.z << ")\t" << ends;
+    cout << "p1:(" << this->faces[index].point[0].x << "," << this->faces[index].point[0].y << "," << this->faces[index].point[0].z << ")\t" << ends;
+    cout << "p2:(" << this->faces[index].point[1].x << "," << this->faces[index].point[1].y << "," << this->faces[index].point[1].z << ")\t" << ends;
+    cout << "p3:(" << this->faces[index].point[2].x << "," << this->faces[index].point[2].y << "," << this->faces[index].point[2].z << ")" << endl;
+    return 0;
+}
+
