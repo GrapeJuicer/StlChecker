@@ -57,6 +57,13 @@ public:
     string comment = "";
     vector<Face> faces;
 
+    enum PatternLevel
+    {
+        lv_exactly, // 完全一致. 頂点の順番が完全に一緒でないといけない
+        lv_pair,    // n番目の要素が同じ面ならば頂点の順番が違っても許容する. 面の向き(法線)は一致する必要がある
+        lv_shape,   // 最終的な形が同じならば許容．法線の向きは一致する必要がある．
+    };
+
     // constructor/destructor
     Stl();
     ~Stl();
