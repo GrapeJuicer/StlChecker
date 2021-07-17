@@ -246,6 +246,11 @@ void Stl::show() const
 
 int Stl::showItem(int index) const
 {
+    if (index >= this->size())
+    {
+        return -1;
+    }
+    
     cout << "norm:(" << this->faces[index].normal.x << "," << this->faces[index].normal.y << "," << this->faces[index].normal.z << ")\t" << ends;
     cout << "p1:(" << this->faces[index].point[0].x << "," << this->faces[index].point[0].y << "," << this->faces[index].point[0].z << ")\t" << ends;
     cout << "p2:(" << this->faces[index].point[1].x << "," << this->faces[index].point[1].y << "," << this->faces[index].point[1].z << ")\t" << ends;
@@ -262,29 +267,43 @@ bool Stl::equals(const Stl &r, enum PatternLevel lv) const
 bool Stl::equalsWithShow(const Stl &r, bool isShow, enum PatternLevel lv) const
 {
     bool flag;
+    int lsize;
 
-    if (this->size() != r.size())
+    if (!isShow && this->size() != r.size())
     {
         return false;
     }
+
+    lsize = max<int>(this->size(), r.size());
 
     if (lv == lv_exactly)
     {
         flag = true;
 
-        for (int i = 0; i < this->size(); i++)
+        for (int i = 0; i < lsize; i++)
         {
             if (this->faces[i] != r.faces[i])
             {
                 if (isShow)
                 {
+                    int rval;
                     flag = false;
                     // info
                     cout << "P" << i + 1 << endl;
+                    
                     // this
-                    this->showItem(i);
+                    rval = this->showItem(i);
+                    if (rval) // failed
+                    {
+                        cout << "none" << endl;
+                    }
+
                     // r
-                    r.showItem(i);
+                    rval = r.showItem(i);
+                    if (rval) // failed
+                    {
+                        cout << "none" << endl;
+                    }
                 }
                 else
                 {
