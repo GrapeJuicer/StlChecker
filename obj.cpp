@@ -250,7 +250,7 @@ int Stl::showItem(int index) const
     {
         return -1;
     }
-    
+
     cout << "norm:(" << this->faces[index].normal.x << "," << this->faces[index].normal.y << "," << this->faces[index].normal.z << ")\t" << ends;
     cout << "p1:(" << this->faces[index].point[0].x << "," << this->faces[index].point[0].y << "," << this->faces[index].point[0].z << ")\t" << ends;
     cout << "p2:(" << this->faces[index].point[1].x << "," << this->faces[index].point[1].y << "," << this->faces[index].point[1].z << ")\t" << ends;
@@ -290,7 +290,7 @@ bool Stl::equalsWithShow(const Stl &r, bool isShow, enum PatternLevel lv) const
                     flag = false;
                     // info
                     cout << "P" << i + 1 << endl;
-                    
+
                     // this
                     rval = this->showItem(i);
                     if (rval) // failed
