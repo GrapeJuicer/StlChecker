@@ -244,7 +244,7 @@ void Stl::show() const
     }
 }
 
-int Stl::showItem(unsigned int index) const
+int Stl::showItem(int index) const
 {
     cout << "norm:(" << this->faces[index].normal.x << "," << this->faces[index].normal.y << "," << this->faces[index].normal.z << ")\t" << ends;
     cout << "p1:(" << this->faces[index].point[0].x << "," << this->faces[index].point[0].y << "," << this->faces[index].point[0].z << ")\t" << ends;
