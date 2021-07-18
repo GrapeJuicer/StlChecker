@@ -323,8 +323,56 @@ bool Stl::equalsWithShow(const Stl &r, bool isShow, enum PatternLevel lv) const
     // }
     else
     {
-        return false;
+bool Stl::inRangeWithShow(const Stl &r, float range, bool isShow, int rule) const
+{
+    bool flag = true;
+    int lsize, ssize;
+
+    if (rule != rule::direction || rule != rule::point)
+    {
+        throw invalid_argument("Invalid rule.");
     }
+
+    if (this->size() != r.size())
+    {
+        if (isShow)
+        {
+            flag = false;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    lsize = max<int>(this->size(), r.size());
+    ssize = min<int>(this->size(), r.size());
+
+    for (int i = 0; i < lsize; i++)
+    {
+        if (i >= ssize)
+        {
+            cout << "P" << i + 1 << endl;
+            this->showItem(i);
+            r.showItem(i);
+        }
+        else if (this->faces[i].inRange(r.faces[i], range, rule))
+        {
+            if (isShow)
+            {
+                flag = false;
+                cout << "P" << i + 1 << endl;
+                this->showItem(i);
+                r.showItem(i);
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
+    return flag;
 }
 
 bool Stl::operator==(const Stl &r) const
