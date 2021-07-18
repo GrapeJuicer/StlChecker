@@ -17,7 +17,7 @@ Vec3::~Vec3()
 {
 }
 
-float Vec3::length()
+float Vec3::length() const
 {
     return sqrt(pow(this->x, 2) + pow(this->y, 2) + pow(this->z, 2));
 }
@@ -291,6 +291,7 @@ int Stl::showItem(int index) const
 {
     if (index >= this->size())
     {
+        cout << "none" << endl;
         return -1;
     }
 
@@ -302,51 +303,49 @@ int Stl::showItem(int index) const
 }
 
 // now , lv_exactly only
-bool Stl::equals(const Stl &r, enum PatternLevel lv) const
+bool Stl::equals(const Stl &r, int lv) const
 {
     return this->equalsWithShow(r, false, lv);
 }
 
-bool Stl::equalsWithShow(const Stl &r, bool isShow, enum PatternLevel lv) const
+bool Stl::equalsWithShow(const Stl &r, bool isShow, int lv) const
 {
-    bool flag;
-    int lsize;
+    bool flag = true;
+    int lsize, ssize;
 
-    if (!isShow && this->size() != r.size())
+    if (this->size() != r.size())
     {
-        return false;
+        if (isShow)
+        {
+            flag = false;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     lsize = max<int>(this->size(), r.size());
+    ssize = min<int>(this->size(), r.size());
 
-    if (lv == lv_exactly)
+    if (lv == stlset::level::exactly)
     {
-        flag = true;
-
         for (int i = 0; i < lsize; i++)
         {
-            if (this->faces[i] != r.faces[i])
+            if (i >= ssize)
+            {
+                cout << "P" << i + 1 << endl;
+                this->showItem(i);
+                r.showItem(i);
+            }
+            else if (this->faces[i] != r.faces[i])
             {
                 if (isShow)
                 {
-                    int rval;
                     flag = false;
-                    // info
                     cout << "P" << i + 1 << endl;
-
-                    // this
-                    rval = this->showItem(i);
-                    if (rval) // failed
-                    {
-                        cout << "none" << endl;
-                    }
-
-                    // r
-                    rval = r.showItem(i);
-                    if (rval) // failed
-                    {
-                        cout << "none" << endl;
-                    }
+                    this->showItem(i);
+                    r.showItem(i);
                 }
                 else
                 {
@@ -354,18 +353,23 @@ bool Stl::equalsWithShow(const Stl &r, bool isShow, enum PatternLevel lv) const
                 }
             }
         }
+
         return flag;
     }
-    // else if (lv == lv_pair)
+    // else if (lv == stlset::level::pair)
     // {
     //     //
     // }
-    // else if(lv == lv_shape)
+    // else if(lv == stlset::level::shape)
     // {
     //     //
     // }
     else
     {
+        throw invalid_argument("Invalid rule.");
+    }
+}
+
 bool Stl::inRangeWithShow(const Stl &r, float range, bool isShow, int rule) const
 {
     bool flag = true;
