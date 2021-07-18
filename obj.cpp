@@ -79,27 +79,25 @@ Face::~Face()
 
 bool Face::inRange(const Face &r, double range, int rule) const
 {
-    if (rule == rule::direction || rule == rule::point)
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            if (!this->point[i].inRange(r.point[i], range, rule))
-            {
-                return false;
-            }
-        }
-
-        if (!this->normal.inRange(r.normal, range, rule))
-        {
-            return false;
-        }
-
-        return true;
-    }
-    else
+    if (rule != rule::direction && rule != rule::point)
     {
         throw invalid_argument("Invalid rule.");
     }
+
+    for (int i = 0; i < 3; i++)
+    {
+        if (!this->point[i].inRange(r.point[i], range, rule))
+        {
+            return false;
+        }
+    }
+
+    if (!this->normal.inRange(r.normal, range, rule))
+    {
+        return false;
+    }
+
+    return true;
 }
 
 bool Face::operator==(const Face &r) const
