@@ -22,17 +22,26 @@ int main(int argc, char *argv[])
     version
     format
     result
+    permission
     */
-    char shortotps[] = "hvf:r";
+    char shortotps[] = "hvf:rp:u:";
     struct option longopts[] = {
         {"help", no_argument, NULL, 'h'},
         {"version", no_argument, NULL, 'v'},
         {"format", required_argument, NULL, 'f'},
         {"result", no_argument, NULL, 'r'},
+        {"permission", required_argument, NULL, 'p'},
+        {"rule", required_argument, NULL, 'u'},
         OPT_END};
     struct optarg findopts[OPTSIZE];
     int folen;
     string srctype = "bb";
+    double permission_range;
+    bool set_permission = false;
+    string opstr;
+    int rule = rule::direction;
+
+    bool result;
 
     Stl s[2];
 
@@ -55,6 +64,26 @@ int main(int argc, char *argv[])
         case 'r':
             isShow = false;
             break;
+        case 'p':
+            set_permission = true;
+            permission_range = atof(findopts[i].arg);
+            break;
+        case 'u':
+            opstr = findopts[i].arg;
+            if (opstr == "0" || opstr == "direction")
+            {
+                rule = rule::direction;
+            }
+            else if (opstr == "1" || opstr == "point")
+            {
+                rule = rule::point;
+            }
+            else
+            {
+                cout << "Error: Invalid option value: " << opstr << endl;
+                return -1;
+            }
+            break;
         default:
             break;
         }
@@ -63,6 +92,12 @@ int main(int argc, char *argv[])
     if (argc - optind != 2) // file1 file2
     {
         cerr << "Error: Invlid argumanets." << endl;
+        return -1;
+    }
+
+    if (set_permission && permission_range <= 0)
+    {
+        cerr << "Error: option.permission: Invalid value." << endl;
         return -1;
     }
 
@@ -75,9 +110,20 @@ int main(int argc, char *argv[])
         }
     }
 
+    // check
+    if (set_permission)
+    {
+        result = s[0].inRangeWithShow(s[1], permission_range, isShow, rule);
+    }
+    else
+    {
+        result = s[0].equalsWithShow(s[1], isShow, level::exactly);
+    }
+    
+    // show result
     if (isShow)
     {
-        if (s[0].equalsWithShow(s[1], true))
+        if (result)
         {
             cout << "[O] file structure matched." << endl;
         }
@@ -88,7 +134,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        cout << (s[0] == s[1] ? "True" : "False") << endl;
+        cout << (result ? "True" : "False") << endl;
     }
 
     return 0;
