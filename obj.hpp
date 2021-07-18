@@ -32,7 +32,7 @@ namespace stlset
         Vec3();
         Vec3(float x, float y, float z);
         ~Vec3();
-        float length() const;
+        float distance(const Vec3 &r) const;
         bool inRange(const Vec3 &r, double range, int rule = stlset::rule::direction) const;
 
         // operator

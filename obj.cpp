@@ -17,7 +17,7 @@ Vec3::~Vec3()
 {
 }
 
-float Vec3::length() const
+float Vec3::distance(const Vec3 &r) const
 {
     return sqrt(pow(this->x - r.x, 2) + pow(this->y - r.y, 2) + pow(this->z - r.z, 2));
 }
