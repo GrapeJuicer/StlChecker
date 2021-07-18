@@ -19,18 +19,18 @@ Vec3::~Vec3()
 
 float Vec3::length() const
 {
-    return sqrt(pow(this->x, 2) + pow(this->y, 2) + pow(this->z, 2));
+    return sqrt(pow(this->x - r.x, 2) + pow(this->y - r.y, 2) + pow(this->z - r.z, 2));
 }
 
 bool Vec3::inRange(const Vec3 &r, double range, int rule) const
 {
     if (rule == rule::direction)
     {
-        return (this->x - r.x <= range || this->y - r.y <= range || this->z - r.z <= range);
+        return (fabs(this->x - r.x) <= range && fabs(this->y - r.y) <= range && fabs(this->z - r.z) <= range);
     }
     else if (rule == rule::point)
     {
-        return (this->length() - r.length() <= range);
+        return (this->distance(r) <= range);
     }
     else
     {
@@ -375,7 +375,7 @@ bool Stl::inRangeWithShow(const Stl &r, float range, bool isShow, int rule) cons
     bool flag = true;
     int lsize, ssize;
 
-    if (rule != rule::direction || rule != rule::point)
+    if (rule != rule::direction && rule != rule::point)
     {
         throw invalid_argument("Invalid rule.");
     }
@@ -403,7 +403,7 @@ bool Stl::inRangeWithShow(const Stl &r, float range, bool isShow, int rule) cons
             this->showItem(i);
             r.showItem(i);
         }
-        else if (this->faces[i].inRange(r.faces[i], range, rule))
+        else if (!this->faces[i].inRange(r.faces[i], range, rule))
         {
             if (isShow)
             {
