@@ -22,6 +22,22 @@ float Vec3::length()
     return sqrt(pow(this->x, 2) + pow(this->y, 2) + pow(this->z, 2));
 }
 
+bool Vec3::inRange(const Vec3 &r, double range, int rule) const
+{
+    if (rule == rule::direction)
+    {
+        return (this->x - r.x <= range || this->y - r.y <= range || this->z - r.z <= range);
+    }
+    else if (rule == rule::point)
+    {
+        return (this->length() - r.length() <= range);
+    }
+    else
+    {
+        throw invalid_argument("Invalid rule.");
+    }
+}
+
 bool Vec3::operator==(const Vec3 &r) const
 {
     return (this->x == r.x && this->y == r.y && this->z == r.z);
@@ -59,6 +75,31 @@ Face::Face(float x1, float y1, float z1,
 
 Face::~Face()
 {
+}
+
+bool Face::inRange(const Face &r, double range, int rule) const
+{
+    if (rule == rule::direction || rule == rule::point)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if (!this->point[i].inRange(r.point[i], range, rule))
+            {
+                return false;
+            }
+        }
+
+        if (!this->normal.inRange(r.normal, range, rule))
+        {
+            return false;
+        }
+
+        return true;
+    }
+    else
+    {
+        throw invalid_argument("Invalid rule.");
+    }
 }
 
 bool Face::operator==(const Face &r) const
