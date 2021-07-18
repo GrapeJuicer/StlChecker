@@ -8,6 +8,7 @@
 #define ISSUE_LINK "https://github.com/GrapeJuicer/StlChecker/issues"
 
 using namespace std;
+using namespace stlset;
 
 void printHelp();
 void printVersion();

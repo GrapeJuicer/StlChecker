@@ -1,5 +1,7 @@
 #include "obj.hpp"
 
+using namespace stlset;
+
 Vec3::Vec3() : Vec3(0.0, 0.0, 0.0)
 {
 }
