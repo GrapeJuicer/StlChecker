@@ -300,16 +300,18 @@ int Stl::loadBinary(ifstream &file)
         this->setComment(s);
         // サイズの読み込み
         file.read(reinterpret_cast<char *>(&size), this->def_size_byte);
-
+        // 面の読み込み
         for (int i = 0; i < size; i++)
         {
             Face face;
             float x, y, z;
 
+            // 法線
             file.read(reinterpret_cast<char *>(&x), this->def_value_byte);
             file.read(reinterpret_cast<char *>(&y), this->def_value_byte);
             file.read(reinterpret_cast<char *>(&z), this->def_value_byte);
             face.setNormal(Vec3(x, y, z));
+            // 頂点
             for (int i = 0; i < 3; i++)
             {
                 file.read(reinterpret_cast<char *>(&x), this->def_value_byte);
@@ -317,15 +319,15 @@ int Stl::loadBinary(ifstream &file)
                 file.read(reinterpret_cast<char *>(&z), this->def_value_byte);
                 face.setVertex(Vec3(x, y, z), i);
             }
-
-            file.seekg(2, ios::cur); // 2byte 進む
-
-            // 登録
+            // 2byte 進む
+            file.seekg(2, ios::cur);
+            // 面を登録
             this->faces.push_back(face);
         }
     }
     catch (const exception &e)
     {
+        // 例外が出たら失敗
         return -1;
     }
 
