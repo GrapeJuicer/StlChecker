@@ -175,6 +175,7 @@ bool Face::operator!=(const Face &r) const
 
 Stl::Stl()
 {
+    this->comment = "";
 }
 
 Stl::~Stl()
@@ -188,37 +189,28 @@ int Stl::size() const
 
 int Stl::load(string file, bool isBinary)
 {
+    ifstream fs;
+
     if (isBinary)
     {
-        ifstream fs(file, ios::binary);
-        if (!fs)
-        {
-            return -1;
-        }
-
-        return this->load(fs, isBinary);
+        fs = ifstream(file, ios::binary);
     }
     else
     {
-        ifstream fs(file);
-        if (!fs)
-        {
-            return -1;
-        }
-        return this->load(fs, isBinary);
+        fs = ifstream(file);
     }
+
+    if (!fs)
+    {
+        return -1;
+    }
+
+    return this->load(fs, isBinary);
 }
 
 int Stl::load(ifstream &file, bool isBinary)
 {
-    if (isBinary)
-    {
-        return this->loadBinary(file);
-    }
-    else
-    {
-        return this->loadText(file);
-    }
+    return (isBinary ? this->loadBinary(file) : this->loadText(file));
 }
 
 int Stl::loadText(ifstream &file)
@@ -289,8 +281,8 @@ int Stl::loadText(ifstream &file)
     }
     catch (const exception &e)
     {
-        // 何か例外が出たら失敗
-        return 1;
+        // 例外が出たら失敗
+        return -1;
     }
 
     return 0;
@@ -301,9 +293,8 @@ int Stl::loadBinary(ifstream &file)
     try
     {
         // 任意文字列の読み込み
-        char s[80];
+        char s[this->def_comment_byte];
         int size = 0;
-
         // 任意文字列の読み込み
         file.read(s, this->def_comment_byte);
         this->setComment(s);
@@ -355,7 +346,7 @@ int Stl::showItem(int index) const
 {
     if (index >= this->size())
     {
-        cout << "none" << endl;
+        cout << "None" << endl;
         return -1;
     }
 

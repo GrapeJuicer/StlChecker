@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "obj.hpp"
 #include "optarg.h"
 
@@ -107,7 +108,7 @@ int main(int argc, char *argv[])
     // オプションを含めない引数の個数が2つで無い場合，エラーを出力して終了
     if (argc - optind != 2) // file1 file2
     {
-        cerr << "Error: Invlid argumanets." << endl;
+        cerr << "Error: Invalid argumanets." << endl;
         return -1;
     }
 
