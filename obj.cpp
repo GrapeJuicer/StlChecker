@@ -8,9 +8,9 @@ Vec3::Vec3() : Vec3(0.0, 0.0, 0.0)
 
 Vec3::Vec3(float x, float y, float z)
 {
-    this->x = x;
-    this->y = y;
-    this->z = z;
+    this->setX(x);
+    this->setY(y);
+    this->setZ(z);
 }
 
 Vec3::~Vec3()
@@ -19,14 +19,14 @@ Vec3::~Vec3()
 
 float Vec3::distance(const Vec3 &r) const
 {
-    return sqrt(pow(this->x - r.x, 2) + pow(this->y - r.y, 2) + pow(this->z - r.z, 2));
+    return sqrt(pow(this->getX() - r.getX(), 2) + pow(this->getY() - r.getY(), 2) + pow(this->getZ() - r.getZ(), 2));
 }
 
 bool Vec3::inRange(const Vec3 &r, double range, int rule) const
 {
     if (rule == rule::component)
     {
-        return (fabs(this->x - r.x) <= range && fabs(this->y - r.y) <= range && fabs(this->z - r.z) <= range);
+        return (abs(this->getX() - r.getX()) <= range && abs(this->getY() - r.getY()) <= range && abs(this->getZ() - r.getZ()) <= range);
     }
     else if (rule == rule::vertex)
     {
@@ -38,9 +38,39 @@ bool Vec3::inRange(const Vec3 &r, double range, int rule) const
     }
 }
 
+float Vec3::getX() const
+{
+    return this->x;
+}
+
+void Vec3::setX(float x)
+{
+    this->x = x;
+}
+
+float Vec3::getY() const
+{
+    return this->y;
+}
+
+void Vec3::setY(float y)
+{
+    this->y = y;
+}
+
+float Vec3::getZ() const
+{
+    return this->z;
+}
+
+void Vec3::setZ(float z)
+{
+    this->z = z;
+}
+
 bool Vec3::operator==(const Vec3 &r) const
 {
-    return (this->x == r.x && this->y == r.y && this->z == r.z);
+    return (this->getX() == r.getX() && this->getY() == r.getY() && this->getZ() == r.getZ());
 }
 
 bool Vec3::operator!=(const Vec3 &r) const
@@ -60,10 +90,10 @@ Face::Face(Vec3 p[3], Vec3 normal) : Face(p[0], p[1], p[2], normal)
 
 Face::Face(Vec3 p1, Vec3 p2, Vec3 p3, Vec3 normal)
 {
-    this->point[0] = p1;
-    this->point[1] = p2;
-    this->point[2] = p3;
-    this->normal = normal;
+    this->setVertex(p1, 0);
+    this->setVertex(p2, 1);
+    this->setVertex(p3, 2);
+    this->setNormal(normal);
 }
 
 Face::Face(float x1, float y1, float z1,
@@ -86,13 +116,13 @@ bool Face::inRange(const Face &r, double range, int rule) const
 
     for (int i = 0; i < 3; i++)
     {
-        if (!this->point[i].inRange(r.point[i], range, rule))
+        if (!this->getVertex(i).inRange(r.getVertex(i), range, rule))
         {
             return false;
         }
     }
 
-    if (!this->normal.inRange(r.normal, range, rule))
+    if (!this->getNormal().inRange(r.getNormal(), range, rule))
     {
         return false;
     }
@@ -100,9 +130,40 @@ bool Face::inRange(const Face &r, double range, int rule) const
     return true;
 }
 
+void Face::setVertex(const Vec3 &vertex, unsigned int index)
+{
+    if (index > 2)
+    {
+        throw invalid_argument("Invalid index value.");
+    }
+    this->vertex[index] = vertex;
+}
+
+Vec3 Face::getVertex(unsigned int index) const
+{
+    if (index > 2)
+    {
+        throw invalid_argument("Invalid index value.");
+    }
+    return this->vertex[index];
+}
+
+void Face::setNormal(const Vec3 &normal)
+{
+    this->normal = normal;
+}
+
+Vec3 Face::getNormal() const
+{
+    return this->normal;
+}
+
 bool Face::operator==(const Face &r) const
 {
-    return (this->normal == r.normal && this->point[0] == r.point[0] && this->point[1] == r.point[1] && this->point[2] == r.point[2]);
+    return (this->getNormal() == r.getNormal() &&
+            this->getVertex(0) == r.getVertex(0) &&
+            this->getVertex(1) == r.getVertex(1) &&
+            this->getVertex(2) == r.getVertex(2));
 }
 
 bool Face::operator!=(const Face &r) const
@@ -122,7 +183,7 @@ Stl::~Stl()
 
 int Stl::size() const
 {
-    return (int)this->faces.size();
+    return (int)this->getFace().size();
 }
 
 int Stl::load(string file, bool isBinary)
@@ -182,7 +243,7 @@ int Stl::loadText(ifstream &file)
     endsolid 任意の文字列
     */
 
-    string word;
+    string word, buf;
 
     try
     {
@@ -191,28 +252,34 @@ int Stl::loadText(ifstream &file)
             if (word == "solid")
             {
                 // その行を全て読み取る
-                getline(file, this->comment);
-                if (this->comment.length() <= 1) // 任意文字列がなかったら
-                {
-                    this->comment = ""; // 空にする
-                }
+                getline(file, buf);
+                this->setComment(buf);
             }
             else if (word == "facet")
             {
                 Face face;
-                file >> word;                                            // "normal" を捨てる
-                file >> face.normal.x >> face.normal.y >> face.normal.z; // normal x, normal y, normal zl;
-                file >> word >> word;                                    // "outer", "loop" を捨てる
+                float x, y, z;
 
+                // "normal" を捨てる
+                file >> word;
+                // 法線座標読み込み
+                file >> x >> y >> z;
+                face.setNormal(Vec3(x, y, z));
+                // "outer", "loop" を捨てる
+                file >> word >> word;
+                // 面の頂点座標読み込み
                 for (int i = 0; i < 3; i++)
                 {
-                    file >> word;                                                  // "vertex" を捨てる
-                    file >> face.point[i].x >> face.point[i].y >> face.point[i].z; // 点座標読み込み
+                    // "vertex" を捨てる
+                    file >> word;
+                    // 点座標読み込み
+                    file >> x >> y >> z;
+                    face.setVertex(Vec3(x, y, z), i);
                 }
-
-                file >> word >> word; // "endloop", "endfacet" すてる
-
-                this->faces.push_back(face); // 面を登録
+                // "endloop", "endfacet" を捨てる
+                file >> word >> word;
+                // 面を登録
+                this->faces.push_back(face);
             }
             else if (word == "endsolid")
             {
@@ -239,26 +306,25 @@ int Stl::loadBinary(ifstream &file)
 
         // 任意文字列の読み込み
         file.read(s, this->def_comment_byte);
-        this->comment = s;
-
+        this->setComment(s);
         // サイズの読み込み
         file.read(reinterpret_cast<char *>(&size), this->def_size_byte);
 
         for (int i = 0; i < size; i++)
         {
             Face face;
+            float x, y, z;
 
-            // normal position
-            file.read(reinterpret_cast<char *>(&face.normal.x), this->def_value_byte);
-            file.read(reinterpret_cast<char *>(&face.normal.y), this->def_value_byte);
-            file.read(reinterpret_cast<char *>(&face.normal.z), this->def_value_byte);
-
-            // point position
+            file.read(reinterpret_cast<char *>(&x), this->def_value_byte);
+            file.read(reinterpret_cast<char *>(&y), this->def_value_byte);
+            file.read(reinterpret_cast<char *>(&z), this->def_value_byte);
+            face.setNormal(Vec3(x, y, z));
             for (int i = 0; i < 3; i++)
             {
-                file.read(reinterpret_cast<char *>(&face.point[i].x), this->def_value_byte);
-                file.read(reinterpret_cast<char *>(&face.point[i].y), this->def_value_byte);
-                file.read(reinterpret_cast<char *>(&face.point[i].z), this->def_value_byte);
+                file.read(reinterpret_cast<char *>(&x), this->def_value_byte);
+                file.read(reinterpret_cast<char *>(&y), this->def_value_byte);
+                file.read(reinterpret_cast<char *>(&z), this->def_value_byte);
+                face.setVertex(Vec3(x, y, z), i);
             }
 
             file.seekg(2, ios::cur); // 2byte 進む
@@ -277,7 +343,7 @@ int Stl::loadBinary(ifstream &file)
 
 void Stl::show() const
 {
-    cout << "comment: " << this->comment << endl;
+    cout << "comment: " << this->getComment() << endl;
     cout << "size: " << this->size() << endl;
     for (int i = 0; i < this->size(); i++)
     {
@@ -293,10 +359,17 @@ int Stl::showItem(int index) const
         return -1;
     }
 
-    cout << "norm:(" << this->faces[index].normal.x << "," << this->faces[index].normal.y << "," << this->faces[index].normal.z << ")\t" << ends;
-    cout << "p1:(" << this->faces[index].point[0].x << "," << this->faces[index].point[0].y << "," << this->faces[index].point[0].z << ")\t" << ends;
-    cout << "p2:(" << this->faces[index].point[1].x << "," << this->faces[index].point[1].y << "," << this->faces[index].point[1].z << ")\t" << ends;
-    cout << "p3:(" << this->faces[index].point[2].x << "," << this->faces[index].point[2].y << "," << this->faces[index].point[2].z << ")" << endl;
+    Face face = this->getFace(index);
+    Vec3 vec = face.getNormal();
+
+    cout << "normal:(" << vec.getX() << "," << vec.getY() << "," << vec.getZ() << ")" << ends;
+    for (int i = 0; i < 3; i++)
+    {
+        vec = face.getVertex(i);
+        cout << "\tp" << i << ":(" << vec.getX() << "," << vec.getY() << "," << vec.getZ() << ")" << ends;
+    }
+    cout << endl;
+
     return 0;
 }
 
@@ -418,6 +491,27 @@ bool Stl::inRangeWithShow(const Stl &r, float range, bool isShow, int rule) cons
     }
 
     return flag;
+}
+
+// getter/setter
+vector<Face> Stl::getFace() const
+{
+    return this->faces;
+}
+
+Face Stl::getFace(unsigned int index) const
+{
+    return this->faces[index];
+}
+
+string Stl::getComment() const
+{
+    return this->comment;
+}
+
+void Stl::setComment(string comment)
+{
+    this->comment = comment;
 }
 
 bool Stl::operator==(const Stl &r) const

@@ -25,15 +25,23 @@ namespace stlset
     class Vec3
     {
     private:
-    public:
         float x;
         float y;
         float z;
+
+    public:
         Vec3();
         Vec3(float x, float y, float z);
         ~Vec3();
         float distance(const Vec3 &r) const;
         bool inRange(const Vec3 &r, double range, int rule = stlset::rule::component) const;
+        // getter/setter
+        float getX() const;
+        void setX(float x);
+        float getY() const;
+        void setY(float y);
+        float getZ() const;
+        void setZ(float z);
         // operator
         bool operator==(const Vec3 &r) const;
         bool operator!=(const Vec3 &r) const;
@@ -42,11 +50,11 @@ namespace stlset
     class Face
     {
     private:
-    public:
-        // field
-        Vec3 point[3];
+        // member variable
+        Vec3 vertex[3];
         Vec3 normal;
 
+    public:
         // method
         Face();
         Face(Vec3 p[3], Vec3 normal);
@@ -54,6 +62,11 @@ namespace stlset
         Face(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float nx, float ny, float nz);
         ~Face();
         bool inRange(const Face &r, double range, int rule = stlset::rule::component) const;
+        // getter/setter
+        void setVertex(const Vec3 &vertex, unsigned int index);
+        Vec3 getVertex(unsigned int index) const;
+        void setNormal(const Vec3 &normal);
+        Vec3 getNormal() const;
         // operator
         bool operator==(const Face &r) const;
         bool operator!=(const Face &r) const;
@@ -62,21 +75,21 @@ namespace stlset
     class Stl
     {
     private:
+        // member variable
+        string comment;
+        vector<Face> faces;
+        // method
         int loadText(ifstream &file);
         int loadBinary(ifstream &file);
 
     public:
-        // field
+        // member variable
         static const int def_comment_byte = 80;
         static const int def_size_byte = 4;
         static const int def_value_byte = 4;
-        string comment = "";
-        vector<Face> faces;
-
         // constructor/destructor
         Stl();
         ~Stl();
-
         // method
         int size() const;
         int load(string file, bool isBinary);
@@ -86,6 +99,11 @@ namespace stlset
         bool equals(const Stl &r, int lv = stlset::level::exactly) const;
         bool equalsWithShow(const Stl &r, bool isShow, int lv = stlset::level::exactly) const;
         bool inRangeWithShow(const Stl &r, float range, bool isShow, int rule = stlset::rule::component) const;
+        // getter/setter
+        vector<Face> getFace() const;
+        Face getFace(unsigned int index) const;
+        string getComment() const;
+        void setComment(string comment);
         // operator
         bool operator==(const Stl &r) const;
         bool operator!=(const Stl &r) const;
