@@ -94,11 +94,11 @@ int main(int argc, char *argv[])
             break;
         case 'u': // rule
             opstr = findopts[i].arg;
-            if (opstr == to_string(rule::component) || opstr == "component")
+            if (opstr == to_string(rule::component) || opstr == "c" || opstr == "component")
             {
                 rule = rule::component;
             }
-            else if (opstr == to_string(rule::vertex) || opstr == "vertex")
+            else if (opstr == to_string(rule::vertex) || opstr == "v" || opstr == "vertex")
             {
                 rule = rule::vertex;
             }
@@ -185,8 +185,8 @@ void printHelp()
     cout << "  -u<rule>    , --rule=<rule> ," << endl;
     cout << "  -u <rule>   , --rule <rule>          Set the calculation method when the tolerance is set." << endl;
     cout << "                                       The following arguments can be given to <rule>." << endl;
-    cout << "                                           " << rule::component << ", component ... Calculate the distance for each component of a vertex" << endl;
-    cout << "                                           " << rule::vertex << ", vertex    ... Calculate by the distance between two vertexes" << endl;
+    cout << "                                           " << rule::component << ", c, component ... Calculate the distance for each component of a vertex" << endl;
+    cout << "                                           " << rule::vertex << ", v, vertex    ... Calculate by the distance between two vertexes" << endl;
     cout << endl;
     cout << "For bug reporting instructions, please see:" << endl;
     cout << "<" << ISSUE_LINK << ">." << endl;
