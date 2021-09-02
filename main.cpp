@@ -92,19 +92,19 @@ int main(int argc, char *argv[])
                 return -1;
             }
             break;
-        case 'u':
+        case 'u': // rule
             opstr = findopts[i].arg;
-            if (opstr == "0" || opstr == "direction")
+            if (opstr == to_string(rule::component) || opstr == "component")
             {
                 rule = rule::component;
             }
-            else if (opstr == "1" || opstr == "point")
+            else if (opstr == to_string(rule::vertex) || opstr == "vertex")
             {
                 rule = rule::vertex;
             }
             else
             {
-                cout << "Error: Invalid option value: " << opstr << endl;
+                cerr << "Error: option.rule: Invalid value: " << opstr << endl;
                 return -1;
             }
             break;
