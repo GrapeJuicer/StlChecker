@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
         {"version", no_argument, NULL, 'v'},
         {"format", required_argument, NULL, 'f'},
         {"result", no_argument, NULL, 'r'},
-        {"permission", required_argument, NULL, 'p'},
+        {"tolerance", required_argument, NULL, 't'},
         {"rule", required_argument, NULL, 'u'},
         OPT_END};
     // 指定されたオプションの情報を格納する配列
@@ -50,7 +50,9 @@ int main(int argc, char *argv[])
     // ファイルのフォーマット (b:バイナリ / t:テキスト)
     string srctype = "bb";
     // 許容範囲
+    double tolerance_range;
     // 許容範囲設定フラグ
+    bool set_tolerance = false;
     // 引数文字列処理用
     string opstr;
     // 計算方式
@@ -80,9 +82,15 @@ int main(int argc, char *argv[])
         case 'r': // result
             isShow = false;
             break;
-        case 'p':
-            set_permission = true;
-            permission_range = atof(findopts[i].arg);
+        case 't': // tolerance
+            set_tolerance = true;
+            tolerance_range = atof(findopts[i].arg);
+            // 許容誤差が設定されているが，許容範囲が不正な場合，エラーを出力して終了
+            if (tolerance_range < 0)
+            {
+                cerr << "Error: option.tolerance: Invalid value: " << tolerance_range << endl;
+                return -1;
+            }
             break;
         case 'u':
             opstr = findopts[i].arg;
@@ -123,8 +131,9 @@ int main(int argc, char *argv[])
     }
 
     // ファイル内容の比較
+    if (set_tolerance)
     {
-        result = s[0].inRangeWithShow(s[1], permission_range, isShow, rule);
+        result = s[0].inRangeWithShow(s[1], tolerance_range, isShow, rule);
     }
     else
     {
