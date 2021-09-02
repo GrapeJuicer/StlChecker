@@ -18,8 +18,8 @@ namespace stlset
 
     namespace rule
     {
-        const int direction = 0; // 点同士の方向別の距離で計算する(XYZのいずれかが範囲外なら範囲外)
-        const int point = 1;     // 点同士の直線距離から計算する
+        const int component = 0; // 点同士の方向別の距離で計算する(XYZのいずれかが範囲外なら範囲外)
+        const int vertex = 1;    // 点同士の直線距離から計算する
     }
 
     class Vec3
@@ -33,8 +33,7 @@ namespace stlset
         Vec3(float x, float y, float z);
         ~Vec3();
         float distance(const Vec3 &r) const;
-        bool inRange(const Vec3 &r, double range, int rule = stlset::rule::direction) const;
-
+        bool inRange(const Vec3 &r, double range, int rule = stlset::rule::component) const;
         // operator
         bool operator==(const Vec3 &r) const;
         bool operator!=(const Vec3 &r) const;
@@ -54,8 +53,7 @@ namespace stlset
         Face(Vec3 p1, Vec3 p2, Vec3 p3, Vec3 normal);
         Face(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float nx, float ny, float nz);
         ~Face();
-        bool inRange(const Face &r, double range, int rule = stlset::rule::direction) const;
-
+        bool inRange(const Face &r, double range, int rule = stlset::rule::component) const;
         // operator
         bool operator==(const Face &r) const;
         bool operator!=(const Face &r) const;
@@ -87,8 +85,7 @@ namespace stlset
         int showItem(int index) const;
         bool equals(const Stl &r, int lv = stlset::level::exactly) const;
         bool equalsWithShow(const Stl &r, bool isShow, int lv = stlset::level::exactly) const;
-        bool inRangeWithShow(const Stl &r, float range, bool isShow, int rule = stlset::rule::direction) const;
-
+        bool inRangeWithShow(const Stl &r, float range, bool isShow, int rule = stlset::rule::component) const;
         // operator
         bool operator==(const Stl &r) const;
         bool operator!=(const Stl &r) const;

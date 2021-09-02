@@ -53,6 +53,7 @@ int main(int argc, char *argv[])
     // 引数文字列処理用
     string opstr;
     // 計算方式
+    int rule = rule::component;
     // 比較結果
     bool result;
     // 引数で与えられた2つのSTLファイルのデータ
@@ -86,11 +87,11 @@ int main(int argc, char *argv[])
             opstr = findopts[i].arg;
             if (opstr == "0" || opstr == "direction")
             {
-                rule = rule::direction;
+                rule = rule::component;
             }
             else if (opstr == "1" || opstr == "point")
             {
-                rule = rule::point;
+                rule = rule::vertex;
             }
             else
             {

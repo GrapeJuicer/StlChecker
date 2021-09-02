@@ -24,11 +24,11 @@ float Vec3::distance(const Vec3 &r) const
 
 bool Vec3::inRange(const Vec3 &r, double range, int rule) const
 {
-    if (rule == rule::direction)
+    if (rule == rule::component)
     {
         return (fabs(this->x - r.x) <= range && fabs(this->y - r.y) <= range && fabs(this->z - r.z) <= range);
     }
-    else if (rule == rule::point)
+    else if (rule == rule::vertex)
     {
         return (this->distance(r) <= range);
     }
@@ -79,7 +79,7 @@ Face::~Face()
 
 bool Face::inRange(const Face &r, double range, int rule) const
 {
-    if (rule != rule::direction && rule != rule::point)
+    if (rule != rule::component && rule != rule::vertex)
     {
         throw invalid_argument("Invalid rule.");
     }
@@ -373,7 +373,7 @@ bool Stl::inRangeWithShow(const Stl &r, float range, bool isShow, int rule) cons
     bool flag = true;
     int lsize, ssize;
 
-    if (rule != rule::direction && rule != rule::point)
+    if (rule != rule::component && rule != rule::vertex)
     {
         throw invalid_argument("Invalid rule.");
     }
