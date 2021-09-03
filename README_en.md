@@ -1,6 +1,6 @@
 **日本語**版のREADMEは[こちら](https://github.com/GrapeJuicer/StlChecker/blob/main/README.md)．
 
-# StlChecker 1.0.0 (EN)
+# StlChecker 1.1.0 (EN)
 
 StlChecker is a program to check if STL files in text/binary format have the same structure.
 
@@ -44,9 +44,11 @@ Compare 2 binary with tolerance 1.5, vertex rule  $ stlc binary1.stl binary2.stl
 | Version | Update     | About                              |
 | :------ | :--------- | :--------------------------------- |
 | v1.0.0  | 2021/07/17 | First release                      |
+| v1.1.0  | 2021/09/03 | Added options: `tolerance`, `rule` |
 
 
 ### To be supported in the future (subject to change)
 - Function to check an arbitrary number of files simultaneously.
 - Function to check without considering the order of writing.
-- Function to allow for value deviation
+- ~~Function to allow for value deviation.~~
+  - 2021/09/03 - Implemented in v1.1.0

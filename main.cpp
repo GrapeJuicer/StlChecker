@@ -6,7 +6,7 @@
 // オプションの種類の上限(現在は6)
 #define OPTSIZE 10
 // バージョン
-#define VERSION "1.0.0"
+#define VERSION "1.1.0"
 // リンク
 #define ISSUE_LINK "https://github.com/GrapeJuicer/StlChecker/issues"
 
