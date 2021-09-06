@@ -2,7 +2,12 @@
 #  Makefile
 #
 
-RM = del
+ifeq ($(OS),Windows_NT)
+	RM = del
+else
+	RM = rm -f
+endif
+
 
 # 最終目的のファイル
 TARGET = stlc.exe # 実行ファイル名----------------------------
